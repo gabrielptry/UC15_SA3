@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Cliente - Em Construção</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1C1C1C;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #container {
+            width: 60%;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .voltar {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn {
+            font_size: 25px;
+            font_style: calibri;
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .construction-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .construction-box:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div id="container">
+    <h1>Cadastro de Cliente - Em Construção</h1>
+    <p>Página  em Construção :)</p>
+</div>
+
+<div class="voltar">
+    <a href={% url 'home' %} class="btn">Voltar a Tela Inicial</a>
+</div>
+
+<script>
+    //PARTICULAS DE SEMPRE
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let particlesArray;
+
+    function createParticles() {
+        const canvasWidth = window.innerWidth;
+        const canvasHeight = window.innerHeight;
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        particlesArray = [];
+        const numberOfParticles = canvas.width * canvas.height / 5000;
+
+        for (let i = 0; i < numberOfParticles; i++) {
+            const x = Math.random() * canvasWidth;
+            const y = Math.random() * canvasHeight;
+            const size = Math.random() * 2 + 1;
+            const speedX = Math.random() * 3 - 1.5;
+            const speedY = Math.random() * 3 - 1.5;
+
+            particlesArray.push({ x, y, size, speedX, speedY });
+        }
+    }
+
+    function moveParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particlesArray.length; i++) {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.beginPath();
+            ctx.arc(particlesArray[i].x, particlesArray[i].y, particlesArray[i].size, 0, Math.PI * 2);
+            ctx.fill();
+
+            particlesArray[i].x += particlesArray[i].speedX;
+            particlesArray[i].y += particlesArray[i].speedY;
+
+            if (particlesArray[i].x > canvas.width || particlesArray[i].x < 0) {
+                particlesArray[i].speedX *= -1;
+            }
+
+            if (particlesArray[i].y > canvas.height || particlesArray[i].y < 0) {
+                particlesArray[i].speedY *= -1;
+            }
+        }
+
+        requestAnimationFrame(moveParticles);
+    }
+
+    createParticles();
+    moveParticles();
+
+    function redirectHome() {
+        window.location.href = "pagina_inicial.html";
+    }
+</script>
+
+</body>
+</html>

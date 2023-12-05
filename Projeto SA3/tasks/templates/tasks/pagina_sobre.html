@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sobre</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1C1C1C;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #container {
+            width: 60%;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div id="container">
+    <h1>Sobre uma Lista de Tarefas</h1>
+    <p>"Para garantir a organização e eficiência nas atividades diárias, a criação de uma lista de tarefas é essencial. Essa ferramenta permite organizar, priorizar e planejar diversas atividades, sejam elas relacionadas ao cotidiano, a compromissos pessoais ou profissionais. Manter uma lista de tarefas é uma estratégia prática para gerenciar afazeres, desde simples compras no supermercado até a complexidade de projetos no ambiente de trabalho. A lista de tarefas ajuda a manter o foco, a identificar prioridades e a garantir que nenhum compromisso seja esquecido, promovendo assim uma maior produtividade e eficácia na execução das atividades.</p>
+    <p1>Clique <a href={% url 'home' %}>aqui</a> para voltar a tela inicial.</p1>
+    {% load static %}
+    <img src="{% static 'tasks\static\imagem\big_brain.jpg' %}" alt="BIG BRAIN">
+</div>
+
+<script>
+    //AS PARTÍCULASSS
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let particlesArray;
+
+    function createParticles() {
+        const canvasWidth = window.innerWidth;
+        const canvasHeight = window.innerHeight;
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        particlesArray = [];
+        const numberOfParticles = canvas.width * canvas.height / 5000;
+
+        for (let i = 0; i < numberOfParticles; i++) {
+            const x = Math.random() * canvasWidth;
+            const y = Math.random() * canvasHeight;
+            const size = Math.random() * 2 + 1;
+            const speedX = Math.random() * 3 - 1.5;
+            const speedY = Math.random() * 3 - 1.5;
+
+            particlesArray.push({ x, y, size, speedX, speedY });
+        }
+    }
+
+    function moveParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particlesArray.length; i++) {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.beginPath();
+            ctx.arc(particlesArray[i].x, particlesArray[i].y, particlesArray[i].size, 0, Math.PI * 2);
+            ctx.fill();
+
+            particlesArray[i].x += particlesArray[i].speedX;
+            particlesArray[i].y += particlesArray[i].speedY;
+
+            if (particlesArray[i].x > canvas.width || particlesArray[i].x < 0) {
+                particlesArray[i].speedX *= -1;
+            }
+
+            if (particlesArray[i].y > canvas.height || particlesArray[i].y < 0) {
+                particlesArray[i].speedY *= -1;
+            }
+        }
+
+        requestAnimationFrame(moveParticles);
+    }
+
+    createParticles();
+    moveParticles();
+</script>
+
+</body>
+</html>

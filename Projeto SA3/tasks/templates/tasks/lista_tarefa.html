@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Tarefas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #183BA8;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #container {
+            font-size: 20;
+            width: 85%;
+            margin: 15px auto;
+            background-color: #3E3E3E;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: calibri;
+            font-size: 50px;
+            color: #FFFFFF;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #FFFFFF;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease; /* Adicionando transição para mudança de cor */
+        }
+
+        .voltar {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-text {
+            flex-grow: 1;
+            cursor: pointer; /* Mudando o cursor para indicar que a tarefa é clicável */
+        }
+
+        .delete-btn {
+            background-color: #FF2A00;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 30%;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .delete-btn:hover {
+            background-color: #FF5A3A;
+        }
+
+        .task-completed {
+            background-color: #58FF8D; /* Cor de fundo para tarefa concluída*/
+        }
+
+        .btn {
+            font-size: 18px;
+            font-style: calibri;
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div id="container">
+    <h1>Lista de Tarefas</h1>
+    <input type="text" id="taskInput" placeholder="Adicione uma tarefa">
+    <button onclick="addTask()" class="add-btn">Adicionar</button>
+    <ul id="taskList" onclick="markTaskComplete(event)"></ul>
+</div>
+
+<div class="voltar">
+    <a href={% url 'home' %} class="btn">Voltar a Tela Inicial</a>
+</div>
+
+<script>
+    //Partículas de fundo
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let particlesArray;
+
+    function createParticles() {
+        const canvasWidth = window.innerWidth;
+        const canvasHeight = window.innerHeight;
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        particlesArray = [];
+        const numberOfParticles = canvas.width * canvas.height / 9000;
+
+        for (let i = 0; i < numberOfParticles; i++) {
+            const x = Math.random() * canvasWidth;
+            const y = Math.random() * canvasHeight;
+            const size = Math.random() * 2 + 1;
+            const speedX = Math.random() * 3 - 1.5;
+            const speedY = Math.random() * 3 - 1.5;
+
+            particlesArray.push({ x, y, size, speedX, speedY });
+        }
+    }
+
+    function moveParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particlesArray.length; i++) {
+            ctx.fillStyle = "#fff";
+            ctx.beginPath();
+            ctx.arc(particlesArray[i].x, particlesArray[i].y, particlesArray[i].size, 0, Math.PI * 2);
+            ctx.fill();
+
+            particlesArray[i].x += particlesArray[i].speedX;
+            particlesArray[i].y += particlesArray[i].speedY;
+
+            if (particlesArray[i].x > canvas.width || particlesArray[i].x < 0) {
+                particlesArray[i].speedX *= -1;
+            }
+
+            if (particlesArray[i].y > canvas.height || particlesArray[i].y < 0) {
+                particlesArray[i].speedY *= -1;
+            }
+        }
+
+        requestAnimationFrame(moveParticles);
+    }
+
+    createParticles();
+    moveParticles();
+
+    //Funcionalidade da Lista de Tarefas
+    function addTask() {
+        var taskInput = document.getElementById("taskInput");
+        var taskText = taskInput.value;
+
+        if (taskText.trim() !== "") {
+            var taskList = document.getElementById("taskList");
+            var li = document.createElement("li");
+            li.innerHTML = '<span class="task-text">' + taskText + '</span>' + '<button class="delete-btn" onclick="deleteTask(this)">X</button>';
+            taskList.appendChild(li);
+            taskInput.value = "";
+        } else {
+            alert("Por favor, adicione uma tarefa!");
+        }
+    }
+
+    function deleteTask(element) {
+        element.parentElement.remove();
+    }
+
+    function markTaskComplete(event) {
+        if (event.target.classList.contains('task-text')) {
+            event.target.parentElement.classList.toggle('task-completed');
+        }
+    }
+</script>
+
+</body>
+</html>

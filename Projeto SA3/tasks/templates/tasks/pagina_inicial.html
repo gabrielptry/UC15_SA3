@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Task's</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1E1E1E;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #container {
+            width: 40%;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 189, 0.6);
+            border-radius: 70px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1C1C1C;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .sobre {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div id="container">
+    <h1>World of Task's</h1>
+    <div id="cadastro-box">
+        <h2>Login (opcional)</h2>
+        <input type="text" placeholder="Usuário"><br><br>
+        <input type="password" placeholder="Senha"><br><br>
+        <button class="btn">Entrar</button>
+        <a href={% url 'cadastros' %} class="btn">Cadastre-se</a>
+    </div>
+    <div id="start-box">
+        <h2>Lista de Tarefas</h2>
+        <a href={% url 'tarefas' %} class="btn">Iniciar Agora</a>
+    </div>
+</div>
+
+<div class="sobre">
+    <a href={% url 'sobre' %} class="btn">Sobre</a>
+</div>
+
+<script>
+    //Partículas de fundo
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let particlesArray;
+
+    function createParticles() {
+        const canvasWidth = window.innerWidth;
+        const canvasHeight = window.innerHeight;
+
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+
+        particlesArray = [];
+        const numberOfParticles = canvas.width * canvas.height / 5000;
+
+        for (let i = 0; i < numberOfParticles; i++) {
+            const x = Math.random() * canvasWidth;
+            const y = Math.random() * canvasHeight;
+            const size = Math.random() * 2 + 1;
+            const speedX = Math.random() * 3 - 1.5;
+            const speedY = Math.random() * 3 - 1.5;
+
+            particlesArray.push({ x, y, size, speedX, speedY });
+        }
+    }
+
+    function moveParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particlesArray.length; i++) {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.beginPath();
+            ctx.arc(particlesArray[i].x, particlesArray[i].y, particlesArray[i].size, 0, Math.PI * 2);
+            ctx.fill();
+
+            particlesArray[i].x += particlesArray[i].speedX;
+            particlesArray[i].y += particlesArray[i].speedY;
+
+            if (particlesArray[i].x > canvas.width || particlesArray[i].x < 0) {
+                particlesArray[i].speedX *= -1;
+            }
+
+            if (particlesArray[i].y > canvas.height || particlesArray[i].y < 0) {
+                particlesArray[i].speedY *= -1;
+            }
+        }
+
+        requestAnimationFrame(moveParticles);
+    }
+
+    createParticles();
+    moveParticles();
+
+    function redirectAbout() {
+        window.location.href = "lista_tarefas.html";
+    }
+</script>
+
+</body>
+</html>
